@@ -1,6 +1,15 @@
-const express = require('express');
+const fs = require('fs');
 const path = require('path');
-const { authController } = require('./controllers/auth.controller');
+const express = require('express');
+
+// (Before of all:) Check the enviroment configuration for avoid errors
+const envPath = path.join(__dirname, '.env');
+if (!fs.existsSync(envPath)) {
+	console.error('[!] You need to configure the project with a .env file.');
+	process.exit(1);
+}
+
+const { authController } = require('./controllers/auth.controller');    // Now you can import the auth controller with the superbase .env config.
 
 // Configuration
 const app = express();
