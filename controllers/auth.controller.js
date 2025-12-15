@@ -1,5 +1,38 @@
 const { supabase } = require('../config/supabase');
 
+const authMiddleware = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer')) {
+      return res.status(401).json({
+        ok: false,
+        error: 'No token provided. Please login!'
+      });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+
+    // Supabase verification the token
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+
+    if (error || !user) {
+      return res.status(401).json({ 
+        ok: false, 
+        error: 'Invalid or expired token.' 
+      });
+    }
+        
+    req.user = user; // Attach user to request
+    next();
+  } catch (error) {
+    return res.status(500).json({ 
+      ok: false, 
+      error: 'Authentication failed' 
+    });
+  }
+};
+
 const authController = {
   register: async (req, res) => {
     try {
@@ -42,4 +75,4 @@ const authController = {
   },
 };
 
-module.exports = { authController };
+module.exports = { authController, authMiddleware };

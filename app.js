@@ -9,7 +9,7 @@ if (!fs.existsSync(envPath)) {
 	process.exit(1);
 }
 
-const { authController } = require('./controllers/auth.controller');    // Now you can import the auth controller with the superbase .env config.
+const { authController, authMiddleware } = require('./controllers/auth.controller');    // Now you can import the auth controller with the superbase .env config.
 
 // Configuration
 const app = express();
@@ -26,6 +26,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes: views
 app.get('/', (req, res) => {
 	res.render('index', {title:'Home'});
+});
+
+app.get('/verification', authMiddleware, (req, res) => {
+    res.json({
+        ok: true,
+        message: "You're logged!",
+        user: req.user
+    });
 });
 
 // Routes: API auth
