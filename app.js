@@ -1,11 +1,12 @@
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
+var colors = require("colors");
 
 // (Before of all:) Check the enviroment configuration for avoid errors
 const envPath = path.join(__dirname, ".env");
 if (!fs.existsSync(envPath)) {
-    console.error("[!] You need to configure the project with a .env file.");
+    console.error("[".red + "!".yellow + "]".red + " ".reset + "You need to configure the project with a .env file!");
     process.exit(1);
 }
 
@@ -45,5 +46,6 @@ app.post("/api/auth/register", authController.register);
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    // console.log("[*] Server is running on: ".rainbow + `http://localhost:${PORT}`.reset);
+    console.log("[".magenta + "*".blue + "]".magenta + ` Server is running on http://localhost:${PORT}`.rainbow);
 });
